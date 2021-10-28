@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/simba/ncku/ncku-physic-python-HW"
+set -gx VIRTUAL_ENV "/home/simba/ncku/physic-python"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
@@ -52,8 +52,8 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
         set -l old_status $status
 
         # Prompt override?
-        if test -n "(ncku-physic-python-HW) "
-            printf "%s%s" "(ncku-physic-python-HW) " (set_color normal)
+        if test -n "(physic-python) "
+            printf "%s%s" "(physic-python) " (set_color normal)
         else
             # ...Otherwise, prepend env
             set -l _checkbase (basename "$VIRTUAL_ENV")
