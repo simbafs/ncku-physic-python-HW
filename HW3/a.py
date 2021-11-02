@@ -58,8 +58,12 @@ def phi(x: float, y: float) -> float:
     return math.atan(y/x)*180/math.pi
 
 T = []
+T1 = []
+T2 = []
 X = []
 Y = []
+Phi1 = []
+Phi2 = []
 Turning = []
 
 # const
@@ -67,8 +71,8 @@ dt = 0.001
 g = 9.8
 
 # params
-omega = PtoR(VectorP(7.292e-5*5e3, 66/math.pi, 0))
-#  omega = PtoR(VectorP(7.292e-5, 66/math.pi, 0))
+#  omega = PtoR(VectorP(7.292e-5*5e3, 66/math.pi, 0))
+omega = PtoR(VectorP(7.292e-5, 66/math.pi, 0))
 L = 10
 tolerance = 1
 
@@ -84,9 +88,9 @@ i = 0
 startPhi = RtoP(r).phi
 
 v1, v2, v3 = 0, 0, 0
-phiNow = 0
+phiNow = 1
 
-while t < 16:
+while t < 100:
     # append
     T.append(t)
     X.append(r.x)
@@ -100,6 +104,16 @@ while t < 16:
     v.y += a.y*dt
     r.y += v.y*dt
     r.x += v.x*dt
+
+    v1, v2, v3 = v2, v3, v.P().r
+    if(v1 >= v2 and v2 <= v3):
+        if phiNow ==1:
+            Phi1.append(r.P().phi)
+            T1.append(t)
+        else:
+            Phi2.append(r.P().phi)
+            T2.append(t)
+        phiNow = 1-phiNow
     i += 1
 
 fig = plt.figure(figsize=(7, 6), dpi=100)
@@ -121,5 +135,21 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.plot(X, Y)
 ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=100/N, blit=True, repeat=True)
-plt.savefig('a.png')
+plt.savefig('route.png')
+plt.show()
+
+plt.grid()
+plt.title('Foucault pendulum Phi 1')
+plt.xlabel('t')
+plt.ylabel('phi')
+plt.plot(T1, Phi1)
+plt.savefig('phi1.png')
+plt.show()
+
+plt.grid()
+plt.title('Foucault pendulum Phi 2')
+plt.xlabel('t')
+plt.ylabel('phi')
+plt.plot(T2, Phi2)
+plt.savefig('phi2.png')
 plt.show()
