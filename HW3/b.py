@@ -81,12 +81,12 @@ r = PtoR(VectorP(10*math.tan(theta), math.pi/2-theta, 0))
 v = VectorR(0, 0, 0)
 a = VectorR(0, 0, 0)
 i = 0
-startPhi = RtoP(r).phi
+startPoint = PtoR(VectorP(10*math.tan(theta), math.pi/2-theta, 0))
 
 v1, v2, v3 = 0, 0, 0
 phiNow = 0
 
-while t < 16:
+while True:
     # append
     T.append(t)
     X.append(r.x)
@@ -101,6 +101,15 @@ while t < 16:
     r.y += v.y*dt
     r.x += v.x*dt
     i += 1
+
+    v1, v2, v3 = v2, v3, v.P().r
+
+    if(v1 >= v2 and v2 <= v3):
+        d = (startPoint-r).P().r
+        if(d <= tolerance and t >= dt*10):
+            break
+
+print('turn a round take', t, 's')
 
 fig = plt.figure(figsize=(7, 6), dpi=100)
 ax = fig.gca()
@@ -120,5 +129,19 @@ ax.set_title('Foucault pendulum')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.plot(X, Y)
-ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=100/N, blit=True, repeat=True)
+ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=1000/N, blit=True, repeat=False)
 plt.show()
+
+#  plt.grid()
+#  plt.title('Foucault pendulum')
+#  plt.xlabel('t')
+#  plt.ylabel('x')
+#  plt.plot(T, X)
+#  plt.show()
+#
+#  plt.grid()
+#  plt.title('Foucault pendulum')
+#  plt.xlabel('t')
+#  plt.ylabel('y')
+#  plt.plot(T, Y)
+#  plt.show()
