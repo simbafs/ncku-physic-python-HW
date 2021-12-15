@@ -32,10 +32,12 @@ def RtoP(V: VectorR) -> VectorP: # 直角座標轉極座標
         p.theta = 0.0
     else:
         p.theta = math.acos(V.z/p.r)
-    if(V.x == 0 or p.theta == 0):
+    if(p.theta == 0):
         p.phi = 0.0
     else:
-        p.phi = math.atan(V.y/V.x)
+        p.phi = math.acos(V.x/p.r)
+        if V.y < 0:
+            p.phi -= math.pi/2
     return p
 
 def PtoR(V: VectorP) -> VectorR: # 極座標轉直角座標
@@ -70,7 +72,7 @@ g = 9.8
 omega = PtoR(VectorP(7.292e-5*5e3, 66/math.pi, 0))
 #  omega = PtoR(VectorP(7.292e-5, 66/math.pi, 0))
 L = 10
-tolerance = 1
+tolerance = 1e-3
 
 # var
 t = 0
@@ -81,7 +83,8 @@ r = PtoR(VectorP(10*math.tan(theta), math.pi/2-theta, 0))
 v = VectorR(0, 0, 0)
 a = VectorR(0, 0, 0)
 i = 0
-startPoint = PtoR(VectorP(10*math.tan(theta), math.pi/2-theta, 0))
+turnAngle = 3
+endPoint = PtoR(VectorP(10*math.tan(theta), math.pi/2-theta, turnAngle/180*math.pi))
 
 v1, v2, v3 = 0, 0, 0
 phiNow = 0
@@ -105,11 +108,18 @@ while True:
     v1, v2, v3 = v2, v3, v.P().r
 
     if(v1 >= v2 and v2 <= v3):
-        d = (startPoint-r).P().r
-        if(d <= tolerance and t >= dt*10):
-            break
+        if phiNow == 0:
+            d = endPoint.P().phi - r.P().phi
+            #  print(endPoint.P().phi, r.P().phi, d)
+            if(abs(d) <= tolerance and t >= dt*10):
+                #  print(r.P())
+                #  print(r)
+                break
+        else:
+            phiNow = 1-phiNow
 
-print('turn a round take', t, 's')
+print('turn a round take', t, 's to turn', turnAngle, 'degree')
+print('so it take', t*360/turnAngle, 's to turn a round')
 
 fig = plt.figure(figsize=(7, 6), dpi=100)
 ax = fig.gca()
@@ -128,8 +138,9 @@ ax.grid()
 ax.set_title('Foucault pendulum')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
-ax.plot(X, Y)
-ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=1000/N, blit=True, repeat=False)
+ax.plot(X, Y, linewidth=0.1)
+ax.scatter(r.x, r.y, s=10)
+ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=1000/N, blit=True, repeat=True)
 plt.show()
 
 #  plt.grid()

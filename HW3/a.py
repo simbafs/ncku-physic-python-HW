@@ -90,7 +90,7 @@ startPhi = RtoP(r).phi
 v1, v2, v3 = 0, 0, 0
 phiNow = 1
 
-while t < 100:
+while t < 3000:
     # append
     T.append(t)
     X.append(r.x)
@@ -133,23 +133,23 @@ ax.grid()
 ax.set_title('Foucault pendulum')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
-ax.plot(X, Y)
+ax.plot(X, Y, linewidth=0.1)
 ani = animation.FuncAnimation(fig=fig, func=update, frames=N, init_func=init, interval=100/N, blit=True, repeat=True)
-plt.savefig('route.png')
+#  plt.savefig('route.png')
 plt.show()
 
-plt.grid()
-plt.title('Foucault pendulum Phi 1')
-plt.xlabel('t')
-plt.ylabel('phi')
-plt.plot(T1, Phi1)
-plt.savefig('phi1.png')
-plt.show()
-
-plt.grid()
-plt.title('Foucault pendulum Phi 2')
-plt.xlabel('t')
-plt.ylabel('phi')
-plt.plot(T2, Phi2)
-plt.savefig('phi2.png')
-plt.show()
+#  plt.grid()
+#  plt.title('Foucault pendulum Phi 1')
+#  plt.xlabel('t')
+#  plt.ylabel('phi')
+#  plt.plot(T1, Phi1)
+#  plt.savefig('phi1.png')
+#  plt.show()
+#
+#  plt.grid()
+#  plt.title('Foucault pendulum Phi 2')
+#  plt.xlabel('t')
+#  plt.ylabel('phi')
+#  plt.plot(T2, Phi2)
+#  plt.savefig('phi2.png')
+#  plt.show()
