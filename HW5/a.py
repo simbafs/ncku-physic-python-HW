@@ -1,11 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-#  J = []
-#  B = []
+# debug mode
+debug = True
+
+J = []
+B = []
 
 # const
-dt = 0.1
+dt = 0.01
 
 # param
 T101 = 6.8
@@ -29,17 +32,10 @@ def f(b):
     mj = 0
 
     while t < 10:
-        #  T.append(t)
         x = j(t)
-        if(abs(x) > mj):
+        if(abs(x) > abs(mj)):
             mj = x
-        #  J.append(x)
-
         t = t + dt
-
-
-    #  print("b =", b, "mj =", mj)
-
     return mj
 
 t = 0
@@ -47,19 +43,21 @@ beta = lambda t: 2*np.pi/T101*t
 while t < 1:
     x = 2*m*beta(t)
     y = f(beta(t))
-    #  B.append(x)
-    #  J.append(y)
+    if(debug):
+        B.append(x)
+        J.append(y)
 
     if(y < 0.05):
-        print("damping coefficient need", y)
+        print("damping coefficient need", x)
         break
 
     t = t + dt
 
-#  plt.grid()
-#  plt.plot(B, J, label="J", color='blue')
-#  plt.title('b-maxj')
-#  plt.xlabel('b')
-#  plt.ylabel('x')
-#  plt.legend()
-#  plt.show()
+if(debug):
+    plt.grid()
+    plt.plot(B, J, label="J", color='blue')
+    plt.title('b-maxj')
+    plt.xlabel('b')
+    plt.ylabel('max j')
+    plt.legend()
+    plt.show()
