@@ -22,13 +22,13 @@ y = range(-n, n+1)
 z = range(-n, n+1)
 x, y, z = np.meshgrid(x, y, z)
 
-d = np.zeros((leng, leng, leng))
+v = np.zeros((leng, leng, leng))
 
 if '-l' in sys.argv:
     # load data
-    loadD = np.loadtxt('data.csv') 
-    loadedOriginal = loadD.reshape(loadD.shape[0], loadD.shape[1] // d.shape[2], d.shape[2])
-    d = loadedOriginal
+    loadD = np.loadtxt('data.csv')
+    loadedOriginal = loadD.reshape(loadD.shape[0], loadD.shape[1] // v.shape[2], v.shape[2])
+    v = loadedOriginal
 else:
     # calculate
 
@@ -53,7 +53,7 @@ else:
             for k in range(leng):
                 bar and pgbar.update(1)
                 if IsInCone(i, j, k):
-                    d[i][j][k] = 10
+                    v[i][j][k] = 10
 
     #  calculus
     for o in range(leng):
@@ -67,10 +67,10 @@ else:
                     if IsInCone(i,j,k):
                         #  print(i,j,k)
                         continue
-                    d[i,j,k] = (d[i+1,j,k]+d[i-1,j,k]+d[i,j+1,k]+d[i,j-1,k]+d[i,j,k+1]+d[i,j,k-1])/6
+                    v[i,j,k] = (v[i+1,j,k]+v[i-1,j,k]+v[i,j+1,k]+v[i,j-1,k]+v[i,j,k+1]+v[i,j,k-1])/6
 
     # write to file
-    np.savetxt('data.csv', d.reshape(d.shape[0], -1))
+    np.savetxt('data.csv', v.reshape(v.shape[0], -1))
 
 x, y = np.meshgrid(range(-n, n+1), range(-n, n+1))
 
@@ -81,7 +81,7 @@ xz.set_title('XZ')
 xz.set_xlabel('x')
 xz.set_ylabel('z')
 
-fig.colorbar(xz.contourf(x, y, np.transpose(d[n]), 30))
+fig.colorbar(xz.contourf(x, y, np.transpose(v[n]), 30))
 
 xy = fig.add_subplot(122)
 xy.set_aspect('equal')
@@ -89,6 +89,31 @@ xy.set_title('XY')
 xy.set_xlabel('x')
 xy.set_ylabel('y')
 
-fig.colorbar(xy.contourf(x, y, np.transpose(d[:,:,n]), 30))
+fig.colorbar(xy.contourf(x, y, np.transpose(v[:,:,n]), 30))
+
+plt.show()
+
+
+# electric field
+
+Exz = np.gradient(np.transpose(v[n]))
+Exy = np.gradient(np.transpose(v[:, :, n]))
+
+fig = plt.figure("E diagram")
+xz = fig.add_subplot(121)
+xz.set_aspect('equal')
+xz.set_title('XZ')
+xz.set_xlabel('x')
+xz.set_ylabel('z')
+
+xz.streamplot(x, y, Exz[1], Exz[0], density = 0.5)
+
+xy = fig.add_subplot(122)
+xy.set_aspect('equal')
+xy.set_title('XY')
+xy.set_xlabel('x')
+xy.set_ylabel('y')
+
+xy.streamplot(x, y, Exy[1], Exy[0], density = 0.5)
 
 plt.show()
