@@ -24,6 +24,18 @@ x, y, z = np.meshgrid(x, y, z)
 
 v = np.zeros((leng, leng, leng))
 
+# CutEdge reture the closet index that n+1 and n-1 are both in range
+def CutEdge(n:int):
+    if n-1 < 0:
+        n = n+1
+    elif n+1 >= leng:
+        n = n-1
+    return n
+
+# IsInCone test if (i,j,k) is in cone
+def IsInCone(i:int,j:int,k:int):
+    return (x[i][j][k]**2 + y[i][j][k]**2)**0.5 <= z[i][j][k] * np.tan(alpha)
+
 if '-l' in sys.argv:
     # load data
     loadD = np.loadtxt('data.csv')
@@ -31,19 +43,6 @@ if '-l' in sys.argv:
     v = loadedOriginal
 else:
     # calculate
-
-    # CutEdge reture the closet index that n+1 and n-1 are both in range
-    def CutEdge(n:int):
-        if n-1 < 0:
-            n = n+1
-        elif n+1 >= leng:
-            n = n-1
-        return n
-
-    # IsInCone test if (i,j,k) is in cone
-    def IsInCone(i:int,j:int,k:int):
-        return (x[i][j][k]**2 + y[i][j][k]**2)**0.5 < z[i][j][k] * np.tan(alpha)
-
     if bar:
         pgbar = tqdm.tqdm(total=leng**3+leng**4)
 
@@ -72,7 +71,7 @@ else:
     # write to file
     np.savetxt('data.csv', v.reshape(v.shape[0], -1))
 
-x, y = np.meshgrid(range(-n, n+1), range(-n, n+1))
+X, Y = np.meshgrid(range(-n, n+1), range(-n, n+1))
 
 fig = plt.figure("V diagram")
 xz = fig.add_subplot(121)
@@ -81,7 +80,10 @@ xz.set_title('XZ')
 xz.set_xlabel('x')
 xz.set_ylabel('z')
 
-fig.colorbar(xz.contourf(x, y, np.transpose(v[n]), 30))
+xz.plot([0,n*np.tan(alpha)], [0, n], color='blue')
+xz.plot([0,-n*np.tan(alpha)], [0, n], color='blue')
+
+fig.colorbar(xz.contourf(X, Y, np.transpose(v[n]), 30))
 
 xy = fig.add_subplot(122)
 xy.set_aspect('equal')
@@ -89,7 +91,7 @@ xy.set_title('XY')
 xy.set_xlabel('x')
 xy.set_ylabel('y')
 
-fig.colorbar(xy.contourf(x, y, np.transpose(v[:,:,n]), 30))
+fig.colorbar(xy.contourf(X, Y, np.transpose(v[:,:,n]), 30))
 
 plt.show()
 
@@ -106,7 +108,10 @@ xz.set_title('XZ')
 xz.set_xlabel('x')
 xz.set_ylabel('z')
 
-xz.streamplot(x, y, Exz[1], Exz[0], density = 0.5)
+xz.plot([0,n*np.tan(alpha)], [0, n], color='blue')
+xz.plot([0,-n*np.tan(alpha)], [0, n], color='blue')
+
+xz.streamplot(X, Y, Exz[1], Exz[0], density = 0.5)
 
 xy = fig.add_subplot(122)
 xy.set_aspect('equal')
@@ -114,6 +119,6 @@ xy.set_title('XY')
 xy.set_xlabel('x')
 xy.set_ylabel('y')
 
-xy.streamplot(x, y, Exy[1], Exy[0], density = 0.5)
+xy.streamplot(X, Y, Exy[1], Exy[0], density = 0.5)
 
 plt.show()
