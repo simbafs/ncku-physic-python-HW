@@ -33,8 +33,11 @@ def CutEdge(n:int):
     return n
 
 # IsInCone test if (i,j,k) is in cone
-def IsInCone(i:int,j:int,k:int):
+def IsInCone(i,j,k):
     return (x[i][j][k]**2 + y[i][j][k]**2)**0.5 <= z[i][j][k] * np.tan(alpha)
+
+def AtBorder(i, j, k):
+    return i <= 0 or j <= 0 or k <= 0 or i >= leng-1 or j >= leng-1 or k >= leng-1
 
 if '-l' in sys.argv:
     # load data
@@ -63,7 +66,7 @@ else:
                     i = CutEdge(i)
                     j = CutEdge(j)
                     k = CutEdge(k)
-                    if IsInCone(i,j,k):
+                    if IsInCone(i,j,k) or AtBorder(i,j,k):
                         #  print(i,j,k)
                         continue
                     v[i,j,k] = (v[i+1,j,k]+v[i-1,j,k]+v[i,j+1,k]+v[i,j-1,k]+v[i,j,k+1]+v[i,j,k-1])/6
